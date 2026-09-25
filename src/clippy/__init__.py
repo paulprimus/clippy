@@ -73,6 +73,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Liest `git status --porcelain=v2` von stdin und gibt die Änderungen formatiert aus.",
     )
     parser.add_argument(
+        "-o",
         "--output",
         choices=("short", "long"),
         default="short",
@@ -80,17 +81,32 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "'long' für einen ausführlichen Block pro Änderung (Standard: long).",
     )
     parser.add_argument(
+        "-p",
         "--path",
         metavar="REGEX",
         help="Optionaler Regex, um nur Änderungen an Pfaden auszugeben, die auf den Regex passen. "
         "Bei Umbenennungen wird der ursprüngliche Pfad ebenfalls berücksichtigt.",
     )
     parser.add_argument(
+        "-s",
         "--save",
         action="store_true",
         help="Speichert alle passenden Pfade durch Leerzeichen getrennt in der Zwischenablage.",
     )
     return parser.parse_args(argv)
+
+
+def _quote_path_for_shell(path: str) -> str:
+    """Quotiert einen Pfad für die sichere Verwendung als PowerShell-Argument.
+
+    Pfade ohne Leerzeichen oder Anführungszeichen bleiben unverändert. Andernfalls
+    wird der Pfad in doppelte Anführungszeichen gesetzt; enthaltene `"` werden
+    PowerShell-konform als `` `" `` escaped.
+    """
+    if not re.search(r'[\s"]', path):
+        return path
+    escaped = path.replace('"', '`"')
+    return f'"{escaped}"'
 
 
 def _copy_to_clipboard(text: str) -> None:
@@ -145,7 +161,7 @@ def main() -> None:
     pattern = re.compile(args.path) if args.path else None
     changes = [change for change in parse(sys.stdin) if _matches_path(change, pattern)]
     if args.save:
-        _copy_to_clipboard(" ".join(change.path for change in changes))
+        _copy_to_clipboard(" ".join(_quote_path_for_shell(change.path) for change in changes))
     for line in _format_changes(changes, args.output):
         print(line)
 
