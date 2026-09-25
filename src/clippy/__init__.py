@@ -106,7 +106,11 @@ def _copy_to_clipboard(text: str) -> None:
         )
 
     command = next(
-        ([executable, *candidate[1:]] for candidate in candidates if (executable := shutil.which(candidate[0]))),
+        (
+            [executable, *candidate[1:]]
+            for candidate in candidates
+            if (executable := shutil.which(candidate[0]))
+        ),
         None,
     )
     if command is None:
@@ -125,6 +129,7 @@ def _format_changes(changes: Iterable[Change], output: str) -> Iterable[str]:
                 yield ""
             first = False
             yield format_change_long(change)
+
 
 def _matches_path(chg: Change, pattern: re.Pattern[str] | None) -> bool:
     """Prüft, ob der Pfad (oder bei Umbenennungen der ursprüngliche Pfad) auf den Regex passt."""

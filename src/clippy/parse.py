@@ -27,12 +27,16 @@ def parse_line(line: str) -> Change | None:
     if record_type == "2":
         fields = rest.split(" ", 7)
         if len(fields) != 8:
-            raise ValueError(f"Zeile hat nicht genügend Felder für einen Rename/Copy-Eintrag: {line!r}")
+            raise ValueError(
+                f"Zeile hat nicht genügend Felder für einen Rename/Copy-Eintrag: {line!r}"
+            )
         xy, sub, m_h, m_i, m_w, h_h, h_i, tail = fields
         score, _, paths = tail.partition(" ")
         path, sep, original_path = paths.partition("\t")
         if not sep:
-            raise ValueError(f"Rename/Copy-Eintrag benötigt Pfad und Ursprungspfad, getrennt durch Tab: {line!r}")
+            raise ValueError(
+                f"Rename/Copy-Eintrag benötigt Pfad und Ursprungspfad, getrennt durch Tab: {line!r}"
+            )
         return Change(
             path=path,
             record_type=record_type,
@@ -47,7 +51,9 @@ def parse_line(line: str) -> Change | None:
     if record_type == "1":
         fields = rest.split(" ", 7)
         if len(fields) != 8:
-            raise ValueError(f"Zeile hat nicht genügend Felder für einen normalen Eintrag: {line!r}")
+            raise ValueError(
+                f"Zeile hat nicht genügend Felder für einen normalen Eintrag: {line!r}"
+            )
         xy, sub, m_h, m_i, m_w, h_h, h_i, path = fields
         return Change(
             path=path,
@@ -61,7 +67,9 @@ def parse_line(line: str) -> Change | None:
     # record_type == "u"
     fields = rest.split(" ", 9)
     if len(fields) != 10:
-        raise ValueError(f"Zeile hat nicht genügend Felder für einen Unmerged-Eintrag: {line!r}")
+        raise ValueError(
+            f"Zeile hat nicht genügend Felder für einen Unmerged-Eintrag: {line!r}"
+        )
     xy, sub, m1, m2, m3, m_w, h1, h2, h3, path = fields
     return Change(
         path=path,
