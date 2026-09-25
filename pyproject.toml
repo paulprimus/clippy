@@ -1,0 +1,17 @@
+[project]
+name = "clippy"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Paul Pacher", email = "paul.pacher@oenb.at" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+clippy = "clippy:main"
+
+[build-system]
+requires = ["uv_build>=0.12.9,<0.13.0"]
+build-backend = "uv_build"
