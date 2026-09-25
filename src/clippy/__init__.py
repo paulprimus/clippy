@@ -27,7 +27,6 @@ _STATUS_LABELS = {
     "U": "konfliktbehaftet",
 }
 
-
 def format_change_short(change: Change) -> str:
     """Formatiert einen `Change` als kompakte Zeile, analog zu `git status --short`."""
     if change.record_type == "?":
@@ -116,7 +115,7 @@ def _copy_to_clipboard(text: str) -> None:
         candidates = (("pbcopy",),)
     else:
         candidates = (
-            ("wl-copy",),
+            ("wl-copy", "-pn"),
             ("xclip", "-selection", "clipboard"),
             ("xsel", "--clipboard", "--input"),
         )
