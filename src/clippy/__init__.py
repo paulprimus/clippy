@@ -87,6 +87,12 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "Bei Umbenennungen wird der ursprüngliche Pfad ebenfalls berücksichtigt.",
     )
     parser.add_argument(
+        "-i",
+        "--ignore-case",
+        action="store_true",
+        help="Ignoriert Groß-/Kleinschreibung beim Abgleich des Pfad-Regex.",
+    )
+    parser.add_argument(
         "-s",
         "--save",
         action="store_true",
@@ -157,7 +163,8 @@ def _matches_path(chg: Change, pattern: re.Pattern[str] | None) -> bool:
 
 def main() -> None:
     args = _parse_args()
-    pattern = re.compile(args.path) if args.path else None
+    pattern_flags = re.IGNORECASE if args.ignore_case else 0
+    pattern = re.compile(args.path, pattern_flags) if args.path else None
     changes = [change for change in parse(sys.stdin) if _matches_path(change, pattern)]
     if args.save:
         _copy_to_clipboard(" ".join(_quote_path_for_shell(change.path) for change in changes))
